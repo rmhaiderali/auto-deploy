@@ -30,7 +30,6 @@ app.post("/webhook", (req, res) => {
       "cd /home/haider/" + body.repository.name,
       "git pull",
       "npm install",
-      "npm run build",
       "pm2 restart " + body.repository.name
     ]
 
