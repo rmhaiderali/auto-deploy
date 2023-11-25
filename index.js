@@ -1,5 +1,5 @@
 import express from "express"
-import execute from "./execute"
+import execute from "./execute.js"
 
 const app = express()
 app.use(express.json())
