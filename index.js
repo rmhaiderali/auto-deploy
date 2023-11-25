@@ -31,7 +31,7 @@ app.post("/webhook", (req, res) => {
       "git pull",
       "npm install",
       "npm run build",
-      { command: "pm2 restart " + body.repository.name, continueOnError: true }
+      "pm2 restart " + body.repository.name
     ]
 
   if (commands)
