@@ -6,6 +6,7 @@ app.use(express.json())
 
 app.post("/webhook", (req, res) => {
   const { body } = req
+  console.dir(body, { depth: null })
 
   if (body.ref !== "refs/heads/main" || body.commits?.length === 0)
     return res.status(200).send("Webhook received successfully")
