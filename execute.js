@@ -1,17 +1,19 @@
-import chalk from "chalk"
+import boxen from "boxen"
 import { exec } from "child_process"
 
-function createStringWithDash(n) {
-  return "─".repeat(n)
-}
-
-function enclose(text) {
-  const line = createStringWithDash(text.length)
-  return line + "\n" + text + "\n" + line
+function box(title, borderColor = "yellow", content = "") {
+  console.log(
+    boxen(content, {
+      title,
+      borderColor,
+      titleAlignment: "left",
+      fullscreen: (width) => [width]
+    })
+  )
 }
 
 export default function (commands, callback) {
-  function next(index = 0) {
+  function execCommand(index = 0) {
     if (index === commands.length) {
       return callback(null)
     }
@@ -24,24 +26,18 @@ export default function (commands, callback) {
 
       process.chdir(directory)
 
-      console.log(chalk.yellow(enclose("Changed directory to: " + directory)))
-      return next(index + 1)
+      box("Command succeeded: " + command, "green")
+      return execCommand(index + 1)
     }
 
     exec(command, function (error, stdout, stderr) {
-      if (error || stderr) {
-        if (error) console.log(error)
-        if (stderr) console.log(stderr)
-        console.log(chalk.red(enclose("Command failed: " + command)))
-      } else {
-        console.log(stdout)
-        console.log(chalk.green(enclose("Command succeeded: " + command)))
-      }
+      if (stderr) box("Command failed: " + command, "red", stderr)
+      else box("Command succeeded: " + command, "green", stdout)
 
-      if (!error || object?.continueOnError) next(index + 1)
+      if (!error || object?.continueOnError) execCommand(index + 1)
       else callback(index)
     })
   }
 
-  next(0)
+  execCommand(0)
 }

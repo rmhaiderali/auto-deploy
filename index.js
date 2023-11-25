@@ -6,32 +6,42 @@ app.use(express.json())
 
 app.post("/webhook", (req, res) => {
   const { body } = req
-  console.dir(body, { depth: null })
 
   if (body.ref !== "refs/heads/main" || body.commits?.length === 0)
     return res.status(200).send("Webhook received successfully")
 
   const commit = body.commits[0]
-  console.log("New commit by " + commit.author.name + ": " + commit.message)
+  console.log(
+    `New commit "${commit.message}" by ${commit.author.name} in ${body.repository.name}`
+  )
 
-  if (body.repository.name === "media-downloader") {
-    const commands = [
-      "cd ~/media-downloader/",
-      "git pull origin main",
+  let commands = null
+  if (["media-downloader", "moments-poster"].includes(body.repository.name))
+    commands = [
+      "cd /home/haider/" + body.repository.name,
+      "git pull",
       "npm install",
       "npm run build",
-      { command: "pm2 delete media-downloader", continueOnError: true },
+      { command: "pm2 delete " + body.repository.name, continueOnError: true },
       "npm run start:pm2"
     ]
+  else if (body.repository.name === "auto-deploy")
+    commands = [
+      "cd /home/haider/" + body.repository.name,
+      "git pull",
+      "npm install",
+      "npm run build",
+      { command: "pm2 restart " + body.repository.name, continueOnError: true }
+    ]
 
+  if (commands)
     execute(commands, function (errorIndex) {
       if (errorIndex === null) {
         console.log("All commands executed successfully!")
       } else {
-        console.error("Command failed: " + commands[errorIndex])
+        console.log("Command at index " + errorIndex + " failed.")
       }
     })
-  }
 
   res.status(200).send("Webhook received successfully")
 })
