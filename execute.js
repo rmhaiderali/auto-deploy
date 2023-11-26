@@ -36,7 +36,7 @@ export default function (commands) {
         else box("Command succeeded: " + command, "green", stdout)
 
         if (!error || object?.continueOnError) execCommand(index + 1)
-        else reject(error, index)
+        else reject({ error, index })
       })
     }
 

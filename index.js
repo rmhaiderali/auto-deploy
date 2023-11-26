@@ -38,7 +38,7 @@ app.post("/webhook", (req, res) => {
       .then(function () {
         console.log("All commands executed successfully!")
       })
-      .catch(function (error, index) {
+      .catch(function ({ error, index }) {
         console.log("Command at index " + index + " failed.")
       })
   }
