@@ -12,32 +12,34 @@ function box(title, borderColor = "yellow", content = "") {
   )
 }
 
-export default function (commands, callback) {
-  function execCommand(index = 0) {
-    if (index === commands.length) {
-      return callback(null)
+export default function (commands) {
+  return new Promise((resolve, reject) => {
+    function execCommand(index = 0) {
+      if (index === commands.length) {
+        return resolve()
+      }
+
+      const object = commands[index]
+      const command = typeof object === "string" ? object : object.command
+
+      if (command.startsWith("cd ")) {
+        const directory = command.substring(3).trim()
+
+        process.chdir(directory)
+
+        box("Command succeeded: " + command, "green")
+        return execCommand(index + 1)
+      }
+
+      exec(command, function (error, stdout, stderr) {
+        if (stderr) box("Command failed: " + command, "red", stderr)
+        else box("Command succeeded: " + command, "green", stdout)
+
+        if (!error || object?.continueOnError) execCommand(index + 1)
+        else reject(error, index)
+      })
     }
 
-    const object = commands[index]
-    const command = typeof object === "string" ? object : object.command
-
-    if (command.startsWith("cd ")) {
-      const directory = command.substring(3).trim()
-
-      process.chdir(directory)
-
-      box("Command succeeded: " + command, "green")
-      return execCommand(index + 1)
-    }
-
-    exec(command, function (error, stdout, stderr) {
-      if (stderr) box("Command failed: " + command, "red", stderr)
-      else box("Command succeeded: " + command, "green", stdout)
-
-      if (!error || object?.continueOnError) execCommand(index + 1)
-      else callback(index)
-    })
-  }
-
-  execCommand(0)
+    execCommand(0)
+  })
 }

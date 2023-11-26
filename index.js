@@ -33,14 +33,15 @@ app.post("/webhook", (req, res) => {
       "pm2 restart " + body.repository.name
     ]
 
-  if (commands)
-    execute(commands, function (errorIndex) {
-      if (errorIndex === null) {
+  if (commands) {
+    execute(commands)
+      .then(function () {
         console.log("All commands executed successfully!")
-      } else {
-        console.log("Command at index " + errorIndex + " failed.")
-      }
-    })
+      })
+      .catch(function (error, index) {
+        console.log("Command at index " + index + " failed.")
+      })
+  }
 
   res.status(200).send("Webhook received successfully")
 })
