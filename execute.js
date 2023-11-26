@@ -32,7 +32,7 @@ export default function (commands) {
       }
 
       exec(command, function (error, stdout, stderr) {
-        if (stderr) box("Command failed: " + command, "red", stderr)
+        if (error) box("Command failed: " + command, "red", stderr)
         else box("Command succeeded: " + command, "green", stdout)
 
         if (!error || object?.continueOnError) execCommand(index + 1)
