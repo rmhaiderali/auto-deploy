@@ -1,7 +1,15 @@
 {
   "type": "module",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "start:pm2": "pm2 start index.js -n auto-deploy"
+  },
   "dependencies": {
     "boxen": "^7.1.1",
     "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   }
 }
