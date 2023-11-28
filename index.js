@@ -25,6 +25,14 @@ app.post("/webhook", (req, res) => {
       { command: "pm2 delete " + body.repository.name, continueOnError: true },
       "npm run start:pm2"
     ]
+  else if (body.repository.name === "whatsapp-express")
+    commands = [
+      "cd /home/haider/" + body.repository.name,
+      "git pull",
+      "npm install",
+      { command: "pm2 delete " + body.repository.name, continueOnError: true },
+      "npm run start:pm2"
+    ]
   else if (body.repository.name === "auto-deploy")
     commands = [
       "cd /home/haider/" + body.repository.name,
