@@ -16,7 +16,7 @@ app.post("/webhook", (req, res) => {
   )
 
   let commands = null
-  if (["media-downloader", "moments-poster"].includes(body.repository.name))
+  if (["media-downloader", "moments-poster", "quiz-app"].includes(body.repository.name))
     commands = [
       "cd /home/haider/" + body.repository.name,
       "git pull",
