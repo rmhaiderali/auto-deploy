@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "start:pm2": "pm2 start index.js -n auto-deploy"
+    "pm2:start": "pm2 start index.js -n auto-deploy"
   },
   "dependencies": {
     "boxen": "^7.1.1",
