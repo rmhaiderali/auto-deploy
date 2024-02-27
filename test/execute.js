@@ -1,5 +1,5 @@
 import ordinal from "ordinal";
-import execute from "./execute.js";
+import execute from "../utils/execute.js";
 
 const commands = [
   { command: "dir", continueOnError: true },

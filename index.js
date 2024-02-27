@@ -1,50 +1,29 @@
 import express from "express";
 import ordinal from "ordinal";
-import execute from "./execute.js";
+import getCommands from "./commands.js";
+import execute from "./utils/execute.js";
+import formatString from "./utils/formatString.js";
 
 const app = express();
 app.use(express.json());
 
 app.post("/webhook", (req, res) => {
-  const { body } = req;
+  const body = req.body;
 
   if (body.ref !== "refs/heads/main" || body.commits?.length === 0)
     return res.status(200).send("Webhook received successfully");
 
   const commit = body.commits[0];
   console.log(
-    `New commit "${commit.message}" by ${commit.author.name} in ${body.repository.name}`
-  );
-
-  let commands = null;
-  if (
-    ["media-downloader", "moments-poster", "quiz-app"].includes(
+    formatString(
+      "New commit {0} by {1} in {2}",
+      commit.message,
+      commit.author.name,
       body.repository.name
     )
-  )
-    commands = [
-      "cd /home/haider/" + body.repository.name,
-      "git pull",
-      "npm install",
-      "npm run build",
-      { command: "npm run pm2:d", continueOnError: true },
-      "npm run pm2:s",
-    ];
-  else if (body.repository.name === "whatsapp-express")
-    commands = [
-      "cd /home/haider/" + body.repository.name,
-      "git pull",
-      "npm install",
-      { command: "npm run pm2:d", continueOnError: true },
-      "npm run pm2:s",
-    ];
-  else if (body.repository.name === "auto-deploy")
-    commands = [
-      "cd /home/haider/" + body.repository.name,
-      "git pull",
-      "npm install",
-      "pm2 restart " + body.repository.name,
-    ];
+  );
+
+  const commands = getCommands(body);
 
   if (commands) {
     execute(commands)
