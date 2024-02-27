@@ -4,7 +4,7 @@
     "dev": "nodemon index.js",
     "start": "node index.js",
     "pm2:s": "pm2 start index.js -n auto-deploy",
-    "pm2:l": "pm2 logs auto-deploy --lines 100",
+    "pm2:l": "pm2 logs auto-deploy --lines 200",
     "pm2:d": "pm2 delete auto-deploy"
   },
   "dependencies": {

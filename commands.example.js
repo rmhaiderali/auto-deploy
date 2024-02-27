@@ -1,7 +1,6 @@
 export default function (body) {
   if (body.repository.name === "example-repo")
     return [
-      // only absolute paths are supported
       "cd /home/user/" + body.repository.name,
       "git pull",
       "npm install",
